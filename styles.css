@@ -151,9 +151,9 @@ body {
 .action-area__duplicator {
   width: 100px;
   height: 100px;
-  border: 1px solid black;
+  border: solid black;
 }
 .action-area__view {
   height: 320px;
-  border: 1px solid black;
+  border: solid black;
 }
