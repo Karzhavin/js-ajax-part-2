@@ -4,14 +4,30 @@
         display: flex;
     }
 
-    &__duplicator {
+    &__box {
+        box-sizing: border-box;
         width: 100px;
         height: 100px;
+        background: rgb(255, 255, 255);
         border: solid black;
     }
 
-    &__view {
+    &__view {  
         height: 320px;
+        padding: 5px;
         border: solid black;
+
+        &_grid {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 5px;
+            overflow: scroll;
+        }
+
+        &_free-location {
+            position: relative;
+            overflow: hidden;
+        }
     }
 }

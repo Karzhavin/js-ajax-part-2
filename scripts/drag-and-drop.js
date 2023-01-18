@@ -1,8 +1,35 @@
 /* Drag and Drop Interface
    ========================================================================== */
 
-const dragBox = document.getElementById('drag-box');
-const targetView = document.getElementById('target-view');
+const duplicator = document.getElementById('duplicator');
+const targetViewGrid = document.getElementById('target-view-grid');
+const targetViewFreeLocation = document.getElementById('target-view-free-location');
+
+class CursorOverBox {
+    #pageX;
+    #pageY;
+    constructor(pageX, pageY) {
+        this.#pageX = pageX;
+        this.#pageY = pageY;
+    }
+
+    getCursorPosition() {
+        return [this.#pageX, this.#pageY];
+    }
+}
+
+class Box {
+    #color;
+    #border;
+    constructor(color, border) {
+        this.#color = color;
+        this.#border = border;
+    }
+
+    getBoxData() {
+        return [this.#color, this.#border];
+    }
+}
 
 /* Color Generator
    ========================================================================== */
@@ -28,18 +55,24 @@ function randomRGB() {
    ========================================================================== */
 
 function dragStartHandler(event) {
-    // event.dataTransfer.dropEffect = 'copy';
-    event.currentTarget.style.border = 'dashed';
-    event.dataTransfer.setData('text/plain', event.target.id);
-    // event.effectAllowed = 'copyMove';
+    event.dataTransfer.dropEffect = 'copy';
+    const targetBox = event.currentTarget.getBoundingClientRect();
+    const cursor = new CursorOverBox(event.pageX - targetBox.left, event.pageY - targetBox.top);
+    const box = new Box(randomRGB(), 'dashed');
+    event.currentTarget.style.background = box.getBoxData()[0];
+    event.currentTarget.style.border = box.getBoxData()[1];
+    const transferArray = [cursor.getCursorPosition(), box.getBoxData()];
+    event.dataTransfer.setData('text/plain', JSON.stringify(transferArray));
 }
 
-dragBox.addEventListener('dragstart', dragStartHandler);
+duplicator.addEventListener('dragstart', dragStartHandler);
 
-function dragEndHandler(ev) {
-    ev.target.style.border = 'solid black';
-    ev.dataTransfer.clearData();
+function dragEndHandler(event) {
+    event.currentTarget.style.border = 'solid black';
+    event.dataTransfer.clearData();
 }
+
+duplicator.addEventListener('dragend', dragEndHandler);
 
 /* Define a Drop Zone
    ========================================================================== */
@@ -50,10 +83,29 @@ function dragOverHandler(event) {
     event.currentTarget.style.background = 'lightblue';
 }
 
+targetViewGrid.addEventListener('dragover', dragOverHandler);
+targetViewFreeLocation.addEventListener('dragover', dragOverHandler);
+
 function dropHandler(event) {
+    const rect = targetViewFreeLocation.getBoundingClientRect();
     event.preventDefault();
-    const data = event.dataTransfer.getData('text/plain');
-    const nodeCopy = document.getElementById(data).cloneNode(true);
-    nodeCopy.id = 'box-1';
-    event.target.appendChild(nodeCopy);
+    const inputData = JSON.parse(event.dataTransfer.getData('text/plain'));
+    const dragCursor = inputData[0];
+    const dragBox = inputData[1];
+    const newBox = document.createElement('div');
+    newBox.classList.add('action-area__box');
+    newBox.style.border = dragBox[1];
+    newBox.style.background = dragBox[0];
+    if (event.target.id === 'target-view-grid') {
+        event.target.appendChild(newBox);
+    }
+    if (event.target.id === 'target-view-free-location') {
+        newBox.style.position = 'absolute';
+        newBox.style.left = `${event.pageX - rect.left - dragCursor[0]}px`;
+        newBox.style.top = `${event.pageY - rect.top - dragCursor[1]}px`;
+        event.target.appendChild(newBox);
+    }
 }
+
+targetViewGrid.addEventListener('drop', dropHandler);
+targetViewFreeLocation.addEventListener('drop', dropHandler);

@@ -148,12 +148,26 @@ body {
 .action-area__duplicator-container {
   display: flex;
 }
-.action-area__duplicator {
+.action-area__box {
+  box-sizing: border-box;
   width: 100px;
   height: 100px;
+  background: #ffffff;
   border: solid black;
 }
 .action-area__view {
   height: 320px;
+  padding: 5px;
   border: solid black;
+}
+.action-area__view_grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 5px;
+  overflow: scroll;
+}
+.action-area__view_free-location {
+  position: relative;
+  overflow: hidden;
 }

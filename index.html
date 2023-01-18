@@ -15,25 +15,14 @@
           </div>
           <div class="column column_s-2 column_m-6 column_l-12">
             <div class="action-area__duplicator-container">
-              <div
-                class="action-area__duplicator"
-                draggable="true"
-                id="drag-box"
-                ondragstart="dragStartHandler(event)"
-                ondragend="dragEndHandler(event)">
-              </div>
+              <div class="action-area__box" draggable="true" id="duplicator"></div>
             </div>
           </div>
           <div class="column column_s-1 column_m-3 column_l-6">
-            <div 
-              class="action-area__view action-area__view_grid"
-              id="target-view"
-              ondrop="dropHandler(event)"
-              ondragover="dragOverHandler(event)">
-            </div>
+            <div class="action-area__view action-area__view_grid" id="target-view-grid"></div>
           </div>
           <div class="column column_s-1 column_m-3 column_l-6">
-            <div class="action-area__view action-area__view_free-location"></div>
+            <div class="action-area__view action-area__view_free-location" id="target-view-free-location"></div>
           </div>
         </div>
       </div>
