@@ -155,6 +155,11 @@ body {
   background: #ffffff;
   border: solid black;
 }
+.action-area__area-description {
+  margin: 0;
+  font-size: 26px;
+  text-align: center;
+}
 .action-area__view {
   height: 320px;
   padding: 5px;
