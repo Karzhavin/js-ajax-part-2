@@ -1,35 +1,55 @@
 /* Drag and Drop Interface
    ========================================================================== */
 
+const actionArea = document.querySelector('.action-area');
 const duplicator = document.getElementById('duplicator');
 const targetViewGrid = document.getElementById('target-view-grid');
 const targetViewFreeLocation = document.getElementById('target-view-free-location');
 
-class CursorOverBox {
-    #pageX;
-    #pageY;
-    constructor(pageX, pageY) {
-        this.#pageX = pageX;
-        this.#pageY = pageY;
-    }
+actionArea.addEventListener('pointerdown', (event) => {
+    if (event.target === duplicator) {
+        const x = event.offsetX;
+        const y = event.offsetY;
+        const newBox = document.createElement('div');
+        newBox.classList.add('action-area__box');
+        // console.log(newBox);
+        newBox.style.border = 'dashed';
+        newBox.style.background = randomRGB();
+        newBox.style.position = 'absolute';
+        newBox.style.left = `${event.pageX - x}px`;
+        newBox.style.top = `${event.pageY - y}px`;
+        actionArea.appendChild(newBox);
 
-    getCursorPosition() {
-        return [this.#pageX, this.#pageY];
-    }
-}
+        const move = function (event) {
+            newBox.style.left = `${event.pageX - x}px`;
+            newBox.style.top = `${event.pageY - y}px`;
+        };
 
-class Box {
-    #color;
-    #border;
-    constructor(color, border) {
-        this.#color = color;
-        this.#border = border;
-    }
+        actionArea.addEventListener('pointermove', move);
 
-    getBoxData() {
-        return [this.#color, this.#border];
+        const remove = function (event) {
+            actionArea.removeChild(newBox);
+            actionArea.removeEventListener('pointermove', move);
+            actionArea.removeEventListener('pointerup', remove);
+            const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+            const dropBox = document.createElement('div');
+            dropBox.classList.add('action-area__box');
+            dropBox.style.border = newBox.style.border;
+            dropBox.style.background = newBox.style.background;
+            if (elemBelow === targetViewGrid) {
+                targetViewGrid.appendChild(dropBox);
+            } else if (elemBelow === targetViewFreeLocation) {
+                const rect = targetViewFreeLocation.getBoundingClientRect();
+                console.log(rect);
+                dropBox.style.position = 'absolute';
+                dropBox.style.left = `${event.pageX - rect.x - x - 3}px`;
+                dropBox.style.top = `${event.pageY - rect.y - y - 3}px`;
+                targetViewFreeLocation.appendChild(dropBox);
+            }
+        };
+        actionArea.addEventListener('pointerup', remove);
     }
-}
+});
 
 /* Color Generator
    ========================================================================== */
@@ -54,58 +74,8 @@ function randomRGB() {
 /* Define a Drag Element
    ========================================================================== */
 
-function dragStartHandler(event) {
-    event.dataTransfer.dropEffect = 'copy';
-    const targetBox = event.currentTarget.getBoundingClientRect();
-    const cursor = new CursorOverBox(event.pageX - targetBox.left, event.pageY - targetBox.top);
-    const box = new Box(randomRGB(), 'dashed');
-    event.currentTarget.style.background = box.getBoxData()[0];
-    event.currentTarget.style.border = box.getBoxData()[1];
-    const transferArray = [cursor.getCursorPosition(), box.getBoxData()];
-    event.dataTransfer.setData('text/plain', JSON.stringify(transferArray));
-}
+/**
+ * 1. Capture Handler
+ */
 
-duplicator.addEventListener('dragstart', dragStartHandler);
-
-function dragEndHandler(event) {
-    event.currentTarget.style.border = 'solid black';
-    event.dataTransfer.clearData();
-}
-
-duplicator.addEventListener('dragend', dragEndHandler);
-
-/* Define a Drop Zone
-   ========================================================================== */
-
-function dragOverHandler(event) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-    event.currentTarget.style.background = 'lightblue';
-}
-
-targetViewGrid.addEventListener('dragover', dragOverHandler);
-targetViewFreeLocation.addEventListener('dragover', dragOverHandler);
-
-function dropHandler(event) {
-    const rect = targetViewFreeLocation.getBoundingClientRect();
-    event.preventDefault();
-    const inputData = JSON.parse(event.dataTransfer.getData('text/plain'));
-    const dragCursor = inputData[0];
-    const dragBox = inputData[1];
-    const newBox = document.createElement('div');
-    newBox.classList.add('action-area__box');
-    newBox.style.border = dragBox[1];
-    newBox.style.background = dragBox[0];
-    if (event.target.id === 'target-view-grid') {
-        event.target.appendChild(newBox);
-    }
-    if (event.target.id === 'target-view-free-location') {
-        newBox.style.position = 'absolute';
-        newBox.style.left = `${event.pageX - rect.left - dragCursor[0]}px`;
-        newBox.style.top = `${event.pageY - rect.top - dragCursor[1]}px`;
-        event.target.appendChild(newBox);
-    }
-}
-
-targetViewGrid.addEventListener('drop', dropHandler);
-targetViewFreeLocation.addEventListener('drop', dropHandler);
+// function captureHandler(event) {}

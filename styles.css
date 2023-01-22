@@ -145,6 +145,9 @@ body {
   padding: 25px;
   text-align: center;
 }
+.action-area {
+  position: relative;
+}
 .action-area__duplicator-container {
   display: flex;
 }
