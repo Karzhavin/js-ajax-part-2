@@ -1,3 +1,43 @@
+/* Get User Device
+   ========================================================================== */
+
+const getDeviceType = () => {
+    const ua = navigator.userAgent;
+
+    const types = [
+        {
+            type: 'tablet',
+            value: /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua),
+        },
+        {
+            type: 'mobile',
+            value: /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+                ua
+            ),
+        },
+    ];
+    try {
+        return types.filter((type) => type.value)[0].type;
+    } catch (error) {
+        return 'desktop';
+    }
+};
+
+const device = getDeviceType();
+const action = {};
+
+switch (device) {
+    case 'desktop':
+        action.start = 'pointerdown';
+        action.move = 'pointermove';
+        action.end = 'pointerup';
+        break;
+    default:
+        action.start = 'touchstart';
+        action.move = 'touchmove';
+        action.end = 'touchend';
+}
+
 /* Drag and Drop Interface
    ========================================================================== */
 
@@ -10,7 +50,7 @@ const targetViewFreeLocation = document.querySelector('.action-area__view_free-l
  * 1. Define a Drag Action
  */
 
-actionArea.addEventListener('pointerdown', (event) => {
+actionArea.addEventListener(action.start, (event) => {
     if (event.target === duplicator) {
         const cursorOnDuplicatorX = event.offsetX;
         const cursorOnDuplicatorY = event.offsetY;
@@ -28,11 +68,25 @@ actionArea.addEventListener('pointerdown', (event) => {
          * 2. Define a Move Action
          */
 
-        const moveHandler = function boxMover(event) {
+        const desktopMoveHandler = (event) => {
             dragBox.style.left = `${event.pageX - cursorOnDuplicatorX}px`;
             dragBox.style.top = `${event.pageY - cursorOnDuplicatorY}px`;
         };
-        actionArea.addEventListener('pointermove', moveHandler);
+        const mobileMoveHandler = (event) => {
+            const touchLocation = event.targetTouches[0];
+            dragBox.style.left = `${touchLocation.pageX} + px`;
+            dragBox.style.top = `${touchLocation.pageY} + px`;
+        };
+
+        let moveHandler;
+
+        if (action.move === 'pointermove') {
+            moveHandler = desktopMoveHandler;
+        } else {
+            moveHandler = mobileMoveHandler;
+        }
+
+        actionArea.addEventListener(action.move, moveHandler);
 
         /**
          * 3. Define a Drop Action
@@ -40,8 +94,8 @@ actionArea.addEventListener('pointerdown', (event) => {
 
         const dropHandler = function (event) {
             actionArea.removeChild(dragBox);
-            actionArea.removeEventListener('pointermove', moveHandler);
-            actionArea.removeEventListener('pointerup', dropHandler);
+            actionArea.removeEventListener(action.move, moveHandler);
+            actionArea.removeEventListener(action.end, dropHandler);
             const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
             const dropBox = boxCreater(
                 'action-area__box',
@@ -61,7 +115,7 @@ actionArea.addEventListener('pointerdown', (event) => {
                 targetViewFreeLocation.appendChild(dropBox);
             }
         };
-        actionArea.addEventListener('pointerup', dropHandler);
+        actionArea.addEventListener(action.end, dropHandler);
     }
 });
 
