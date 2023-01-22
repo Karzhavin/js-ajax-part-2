@@ -2,54 +2,88 @@
    ========================================================================== */
 
 const actionArea = document.querySelector('.action-area');
-const duplicator = document.getElementById('duplicator');
-const targetViewGrid = document.getElementById('target-view-grid');
-const targetViewFreeLocation = document.getElementById('target-view-free-location');
+const duplicator = document.querySelector('.duplicator');
+const targetViewGrid = document.querySelector('.action-area__view_grid');
+const targetViewFreeLocation = document.querySelector('.action-area__view_free-location');
+
+/**
+ * 1. Define a Drag Action
+ */
 
 actionArea.addEventListener('pointerdown', (event) => {
     if (event.target === duplicator) {
-        const x = event.offsetX;
-        const y = event.offsetY;
-        const newBox = document.createElement('div');
-        newBox.classList.add('action-area__box');
-        // console.log(newBox);
-        newBox.style.border = 'dashed';
-        newBox.style.background = randomRGB();
-        newBox.style.position = 'absolute';
-        newBox.style.left = `${event.pageX - x}px`;
-        newBox.style.top = `${event.pageY - y}px`;
-        actionArea.appendChild(newBox);
+        const cursorOnDuplicatorX = event.offsetX;
+        const cursorOnDuplicatorY = event.offsetY;
+        const dragBox = boxCreater(
+            'action-area__box',
+            'absolute',
+            randomRGB(),
+            'dashed',
+            event.pageX - cursorOnDuplicatorX,
+            event.pageY - cursorOnDuplicatorY
+        );
+        actionArea.appendChild(dragBox);
 
-        const move = function (event) {
-            newBox.style.left = `${event.pageX - x}px`;
-            newBox.style.top = `${event.pageY - y}px`;
+        /**
+         * 2. Define a Move Action
+         */
+
+        const moveHandler = function boxMover(event) {
+            dragBox.style.left = `${event.pageX - cursorOnDuplicatorX}px`;
+            dragBox.style.top = `${event.pageY - cursorOnDuplicatorY}px`;
         };
+        actionArea.addEventListener('pointermove', moveHandler);
 
-        actionArea.addEventListener('pointermove', move);
+        /**
+         * 3. Define a Drop Action
+         */
 
-        const remove = function (event) {
-            actionArea.removeChild(newBox);
-            actionArea.removeEventListener('pointermove', move);
-            actionArea.removeEventListener('pointerup', remove);
+        const dropHandler = function (event) {
+            actionArea.removeChild(dragBox);
+            actionArea.removeEventListener('pointermove', moveHandler);
+            actionArea.removeEventListener('pointerup', dropHandler);
             const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
-            const dropBox = document.createElement('div');
-            dropBox.classList.add('action-area__box');
-            dropBox.style.border = newBox.style.border;
-            dropBox.style.background = newBox.style.background;
+            const dropBox = boxCreater(
+                'action-area__box',
+                null,
+                dragBox.style.background,
+                dragBox.style.border,
+                null,
+                null
+            );
             if (elemBelow === targetViewGrid) {
                 targetViewGrid.appendChild(dropBox);
             } else if (elemBelow === targetViewFreeLocation) {
                 const rect = targetViewFreeLocation.getBoundingClientRect();
-                console.log(rect);
                 dropBox.style.position = 'absolute';
-                dropBox.style.left = `${event.pageX - rect.x - x - 3}px`;
-                dropBox.style.top = `${event.pageY - rect.y - y - 3}px`;
+                dropBox.style.left = `${event.pageX - rect.x - cursorOnDuplicatorX - 3}px`;
+                dropBox.style.top = `${event.pageY - rect.y - cursorOnDuplicatorY - 3}px`;
                 targetViewFreeLocation.appendChild(dropBox);
             }
         };
-        actionArea.addEventListener('pointerup', remove);
+        actionArea.addEventListener('pointerup', dropHandler);
     }
 });
+
+/* Box Creater
+   ========================================================================== */
+
+function boxCreater(classList, position, color, border, axisX, axisY) {
+    const box = document.createElement('div');
+    box.classList.add(classList);
+    if (position) {
+        box.style.position = position;
+    }
+    box.style.background = color;
+    box.style.border = border;
+    if (axisX) {
+        box.style.left = `${axisX}px`;
+    }
+    if (axisY) {
+        box.style.top = `${axisY}px`;
+    }
+    return box;
+}
 
 /* Color Generator
    ========================================================================== */
@@ -70,12 +104,3 @@ function random(min, max) {
 function randomRGB() {
     return `rgb(${random(0, 255)},${random(0, 255)},${random(0, 255)})`;
 }
-
-/* Define a Drag Element
-   ========================================================================== */
-
-/**
- * 1. Capture Handler
- */
-
-// function captureHandler(event) {}
