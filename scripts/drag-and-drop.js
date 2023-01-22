@@ -54,14 +54,16 @@ actionArea.addEventListener(action.start, (event) => {
     if (event.target === duplicator) {
         const cursorOnDuplicatorX = event.offsetX;
         const cursorOnDuplicatorY = event.offsetY;
-        const dragBox = boxCreater(
-            'action-area__box',
-            'absolute',
-            randomRGB(),
-            'dashed',
-            event.pageX - cursorOnDuplicatorX,
-            event.pageY - cursorOnDuplicatorY
-        );
+        let axisX;
+        let axisY;
+        if (action.move === 'pointermove') {
+            axisX = event.pageX - cursorOnDuplicatorX;
+            axisY = event.pageY - cursorOnDuplicatorY;
+        } else {
+            axisX = event.targetTouches[0].pageX - 30;
+            axisY = event.targetTouches[0].pageY - 30;
+        }
+        const dragBox = boxCreater('action-area__box', 'absolute', randomRGB(), 'dashed', axisX, axisY);
         actionArea.appendChild(dragBox);
 
         /**
@@ -74,8 +76,8 @@ actionArea.addEventListener(action.start, (event) => {
         };
         const mobileMoveHandler = (event) => {
             const touchLocation = event.targetTouches[0];
-            dragBox.style.left = `${touchLocation.pageX} + px`;
-            dragBox.style.top = `${touchLocation.pageY} + px`;
+            dragBox.style.left = `${touchLocation.pageX - 30}px`;
+            dragBox.style.top = `${touchLocation.pageY - 30}px`;
         };
 
         let moveHandler;
@@ -96,7 +98,12 @@ actionArea.addEventListener(action.start, (event) => {
             actionArea.removeChild(dragBox);
             actionArea.removeEventListener(action.move, moveHandler);
             actionArea.removeEventListener(action.end, dropHandler);
-            const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+            let elemBelow;
+            if (action.move === 'pointermove') {
+                elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+            } else {
+                elemBelow = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+            }
             const dropBox = boxCreater(
                 'action-area__box',
                 null,
@@ -110,8 +117,14 @@ actionArea.addEventListener(action.start, (event) => {
             } else if (elemBelow === targetViewFreeLocation) {
                 const rect = targetViewFreeLocation.getBoundingClientRect();
                 dropBox.style.position = 'absolute';
-                dropBox.style.left = `${event.pageX - rect.x - cursorOnDuplicatorX - 3}px`;
-                dropBox.style.top = `${event.pageY - rect.y - cursorOnDuplicatorY - 3}px`;
+                if (action.move === 'pointermove') {
+                    dropBox.style.left = `${event.pageX - rect.x - cursorOnDuplicatorX - 3}px`;
+                    dropBox.style.top = `${event.pageY - rect.y - cursorOnDuplicatorY - 3}px`;
+                } else {
+                    console.log(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+                    dropBox.style.left = `${event.changedTouches[0].clientX - rect.x - 30}px`;
+                    dropBox.style.top = `${event.changedTouches[0].clientY - rect.y - 30}px`;
+                }
                 targetViewFreeLocation.appendChild(dropBox);
             }
         };
