@@ -121,7 +121,6 @@ actionArea.addEventListener(action.start, (event) => {
                     dropBox.style.left = `${event.pageX - rect.x - cursorOnDuplicatorX - 3}px`;
                     dropBox.style.top = `${event.pageY - rect.y - cursorOnDuplicatorY - 3}px`;
                 } else {
-                    console.log(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
                     dropBox.style.left = `${event.changedTouches[0].clientX - rect.x - 30}px`;
                     dropBox.style.top = `${event.changedTouches[0].clientY - rect.y - 30}px`;
                 }
