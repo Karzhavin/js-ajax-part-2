@@ -142,11 +142,12 @@ body {
 }
 .heading {
   margin: 0;
-  padding: 25px;
+  padding-bottom: 25px;
   text-align: center;
 }
 .action-area {
   position: relative;
+  padding: 25px 0;
 }
 .action-area__duplicator-container {
   display: flex;
@@ -167,7 +168,8 @@ body {
   text-align: center;
 }
 .action-area__view {
-  height: 320px;
+  min-height: 220px;
+  height: 43vh;
   padding: 5px;
   border: solid black;
 }
