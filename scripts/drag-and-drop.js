@@ -119,10 +119,10 @@ actionArea.addEventListener(action.start, (event) => {
                 dropBox.style.position = 'absolute';
                 if (action.move === 'pointermove') {
                     dropBox.style.left = `${event.pageX - rect.x - cursorOnDuplicatorX - 3}px`;
-                    dropBox.style.top = `${event.pageY - rect.y - cursorOnDuplicatorY - 3}px`;
+                    dropBox.style.top = `${event.pageY - rect.y - window.scrollY - cursorOnDuplicatorY - 3}px`;
                 } else {
                     dropBox.style.left = `${event.changedTouches[0].clientX - rect.x - 30}px`;
-                    dropBox.style.top = `${event.changedTouches[0].clientY - rect.y - 30}px`;
+                    dropBox.style.top = `${event.changedTouches[0].clientY - rect.y - window.scrollY - 30}px`;
                 }
                 targetViewFreeLocation.appendChild(dropBox);
             }
