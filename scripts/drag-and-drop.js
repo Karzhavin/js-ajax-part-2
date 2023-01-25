@@ -42,7 +42,7 @@ switch (device) {
    ========================================================================== */
 
 const actionArea = document.querySelector('.action-area');
-const duplicator = document.querySelector('.duplicator');
+const duplicator = document.querySelector('.action-area__box_duplicator');
 const targetViewGrid = document.querySelector('.action-area__view_grid');
 const targetViewFreeLocation = document.querySelector('.action-area__view_free-location');
 
@@ -52,6 +52,7 @@ const targetViewFreeLocation = document.querySelector('.action-area__view_free-l
 
 actionArea.addEventListener(action.start, (event) => {
     if (event.target === duplicator) {
+        document.body.style.cursor = 'grabbing';
         const cursorOnDuplicatorX = event.offsetX;
         const cursorOnDuplicatorY = event.offsetY;
         let axisX;
@@ -95,6 +96,7 @@ actionArea.addEventListener(action.start, (event) => {
          */
 
         const dropHandler = function (event) {
+            document.body.style.cursor = 'default';
             actionArea.removeChild(dragBox);
             actionArea.removeEventListener(action.move, moveHandler);
             actionArea.removeEventListener(action.end, dropHandler);

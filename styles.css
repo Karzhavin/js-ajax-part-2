@@ -158,6 +158,9 @@ body {
   background: #ffffff;
   border: solid black;
 }
+.action-area__box_duplicator:hover {
+  cursor: grab;
+}
 .action-area__area-description {
   margin: 0;
   font-size: 26px;
