@@ -1,0 +1,186 @@
+body {
+  margin: 0;
+  background-color: #fff;
+  font-family: sans-serif;
+  color: #333;
+}
+.grid {
+  background: repeating-linear-gradient(to right, rgba(255, 0, 0, 0.1) 0 calc(50% - 5px), rgba(255, 255, 255, 0.1) calc(50% - 5px) calc(50% + 5px));
+  width: calc(50% * 2 - 30px);
+  margin: 0 auto;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .grid {
+    background: repeating-linear-gradient(to right, rgba(255, 0, 0, 0.1) 0 90px, rgba(255, 255, 255, 0.1) 90px 120px);
+    width: calc(90px * 6 + 30px * 5);
+  }
+}
+@media (min-width: 1000px) {
+  .grid {
+    background: repeating-linear-gradient(to right, rgba(255, 0, 0, 0.1) 0 50px, rgba(255, 255, 255, 0.1) 50px 80px);
+    width: calc(50px * 12 + 30px * 11);
+  }
+}
+.grid_visible {
+  display: block;
+}
+.column-wrapper {
+  margin: 0 auto;
+  padding: 0 15px;
+}
+@media (min-width: 768px) {
+  .column-wrapper {
+    width: 690px;
+  }
+}
+@media (min-width: 1000px) {
+  .column-wrapper {
+    width: 930px;
+  }
+}
+.column-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 10px;
+}
+@media (min-width: 768px) {
+  .column-row {
+    gap: 20px 30px;
+  }
+}
+@media (min-width: 1000px) {
+  .column-row {
+    gap: 40px 30px;
+  }
+}
+/**
+ * Переменные и функции в less не хотят работать с calc(), поэтому придётся прописать вручную
+ * css-правила для модификаторов column_s-1 и column_s-2
+ */
+.column {
+  box-sizing: border-box;
+}
+.column_s-1 {
+  width: calc(50% - 5px);
+}
+.column_s-2 {
+  width: calc((50% - 5px) * 2 + 10px);
+}
+.column_desktop-visible {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .column_desktop-visible {
+    display: block;
+  }
+}
+@media (min-width: 768px) {
+  .column_m-1 {
+    width: 90px;
+  }
+  .column_m-2 {
+    width: 210px;
+  }
+  .column_m-3 {
+    width: 330px;
+  }
+  .column_m-4 {
+    width: 450px;
+  }
+  .column_m-5 {
+    width: 570px;
+  }
+  .column_m-6 {
+    width: 690px;
+  }
+}
+@media (min-width: 1000px) {
+  .column_l-1 {
+    width: 50px;
+  }
+  .column_l-2 {
+    width: 130px;
+  }
+  .column_l-3 {
+    width: 210px;
+  }
+  .column_l-4 {
+    width: 290px;
+  }
+  .column_l-5 {
+    width: 370px;
+  }
+  .column_l-6 {
+    width: 450px;
+  }
+  .column_l-7 {
+    width: 530px;
+  }
+  .column_l-8 {
+    width: 610px;
+  }
+  .column_l-9 {
+    width: 690px;
+  }
+  .column_l-10 {
+    width: 770px;
+  }
+  .column_l-11 {
+    width: 850px;
+  }
+  .column_l-12 {
+    width: 930px;
+  }
+}
+.heading {
+  margin: 0;
+  padding-bottom: 25px;
+  text-align: center;
+}
+.action-area {
+  position: relative;
+  padding: 25px 0;
+}
+.action-area__duplicator-container {
+  display: flex;
+}
+.action-area__box {
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  background: #ffffff;
+  border: solid black;
+}
+.action-area__box_duplicator:hover {
+  cursor: grab;
+}
+.action-area__area-description {
+  margin: 0;
+  font-size: 26px;
+  text-align: center;
+}
+.action-area__view {
+  min-height: 220px;
+  height: 43vh;
+  padding: 5px;
+  border: solid black;
+}
+.action-area__view_grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 5px;
+  overflow: scroll;
+}
+.action-area__view_free-location {
+  position: relative;
+  overflow: hidden;
+}

@@ -1,0 +1,46 @@
+.action-area {
+    position: relative;
+    padding: 25px 0;
+
+    &__duplicator-container {
+        display: flex;
+    }
+
+    &__box {
+        box-sizing: border-box;
+        width: 100px;
+        height: 100px;
+        background: rgb(255, 255, 255);
+        border: solid black;
+
+        &_duplicator:hover {
+            cursor: grab;
+        }
+    }
+
+    &__area-description {
+        margin: 0;
+        font-size: 26px;
+        text-align: center;
+    }
+
+    &__view {  
+        min-height: 220px;
+        height: 43vh;
+        padding: 5px;
+        border: solid black;
+
+        &_grid {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 5px;
+            overflow: scroll;
+        }
+
+        &_free-location {
+            position: relative;
+            overflow: hidden;
+        }
+    }
+}

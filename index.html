@@ -3,11 +3,37 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Searcher</title>
+    <title>Drag and Drop</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <div class="action-area">
+      <div class="column-wrapper">
+        <div class="column-row">
+          <div class="column column_s-2 column_m-6 column_l-12">
+            <h1 class="heading">Drag and Drop</h1>
+          </div>
+          <div class="column column_s-2 column_m-6 column_l-12">
+            <div class="action-area__duplicator-container">
+              <div class="action-area__box action-area__box_duplicator"></div>
+            </div>
+          </div>
+          <div class="column column_s-1 column_m-3 column_l-6">
+            <p class="action-area__area-description">Grid Area</p>
+          </div>
+          <div class="column column_s-1 column_m-3 column_l-6">
+            <p class="action-area__area-description">Free Area</p>
+          </div>
+          <div class="column column_s-1 column_m-3 column_l-6">
+            <div class="action-area__view action-area__view_grid"></div>
+          </div>
+          <div class="column column_s-1 column_m-3 column_l-6">
+            <div class="action-area__view action-area__view_free-location"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="scripts/grid.js"></script>
-    <script src="scripts/searcher.js"></script>
+    <script src="scripts/drag-and-drop.js"></script>
   </body>
 </html>
